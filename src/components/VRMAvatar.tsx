@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { VRM, VRMDebug } from '@pixiv/three-vrm';
+import { VRM, VRMDebug, VRMSchema } from '@pixiv/three-vrm';
 import { useLoader } from 'react-three-fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Clock } from 'three';
+import { AxesHelper, Clock, GridHelper, Scene } from 'three';
 import { useAppState } from '../providers/AppProvider';
 
 interface Props {
@@ -12,38 +12,57 @@ interface Props {
 
 const VRMAvatar: React.FC<Props> = (props) => {
   const { debug } = useAppState();
-  const [vrm, setVrm] = useState<VRM>();
-  const [clock] = useState(new Clock(true));
+  const [vrmAvatar, setVrmAvatar] = useState<VRM>();
+  const [clock] = useState(new Clock(false));
 
   const gltf = useLoader(GLTFLoader, props.url);
 
   useEffect(() => {
-    console.log(gltf);
     if (!gltf) {
       return;
     }
 
     (async () => {
+      const scene = new Scene();
+      let vrm: VRM;
       if (debug) {
-        const vrm = await VRMDebug.from(gltf);
-        setVrm(vrm);
+        vrm = await VRMDebug.from(gltf);
+        scene.add(vrm.scene);
+        setVrmAvatar(vrm);
+
+        const gridHelper = new GridHelper(10, 10);
+        scene.add(gridHelper);
+
+        const axesHelper = new AxesHelper(5);
+        scene.add(axesHelper);
       } else {
-        const vrm = await VRM.from(gltf);
-        setVrm(vrm);
+        vrm = await VRM.from(gltf);
+        setVrmAvatar(vrm);
       }
+
+      // 正面を向かせる
+      vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.Hips)?.rotateY(Math.PI);
+
+      clock.start();
     })();
   }, [gltf]);
 
   useEffect(() => {
-    if (!vrm) {
+    if (!vrmAvatar) {
       return;
     }
-    vrm.update(clock.elapsedTime);
-  }, [vrm, clock]);
+    vrmAvatar.update(clock.elapsedTime);
+  }, [clock]);
 
-  return vrm !== undefined ? (
+  useEffect(() => {
+    return () => {
+      if (clock) clock.stop();
+    };
+  }, []);
+
+  return vrmAvatar !== undefined ? (
     <mesh>
-      <primitive object={vrm.scene} />
+      <primitive object={vrmAvatar.scene} />
     </mesh>
   ) : (
     <></>
