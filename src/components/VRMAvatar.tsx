@@ -1,14 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { VRM } from '@pixiv/three-vrm';
+import { VRM, VRMDebug } from '@pixiv/three-vrm';
 import { useLoader } from 'react-three-fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Clock } from 'three';
+import { useAppState } from '../providers/AppProvider';
 
 interface Props {
   url: string;
 }
 
 const VRMAvatar: React.FC<Props> = (props) => {
+  const { debug } = useAppState();
   const [vrm, setVrm] = useState<VRM>();
   const [clock] = useState(new Clock(true));
 
@@ -21,8 +24,13 @@ const VRMAvatar: React.FC<Props> = (props) => {
     }
 
     (async () => {
-      const vrm = await VRM.from(gltf);
-      setVrm(vrm);
+      if (debug) {
+        const vrm = await VRMDebug.from(gltf);
+        setVrm(vrm);
+      } else {
+        const vrm = await VRM.from(gltf);
+        setVrm(vrm);
+      }
     })();
   }, [gltf]);
 
