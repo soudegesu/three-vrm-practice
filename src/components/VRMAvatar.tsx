@@ -35,7 +35,7 @@ const VRMAvatar: React.FC<Props> = (props) => {
 
   return vrm !== undefined ? (
     <mesh>
-      <primitive object={vrm?.scene} />
+      <primitive object={vrm.scene} />
     </mesh>
   ) : (
     <></>
