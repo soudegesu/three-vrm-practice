@@ -11,6 +11,7 @@ const TopPage: FC = () => {
   return (
     <Box display="flex" alignItems="center" justifyContent="center">
       <Canvas style={{ background: 'black', width, height, border: 'solid 1px black' }}>
+        <directionalLight position={[1, 1, 1]} />
         <Suspense fallback={null}>
           <VRMAvatar url={url} />
         </Suspense>
