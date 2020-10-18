@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { VRM, VRMDebug, VRMSchema } from '@pixiv/three-vrm';
 import { useLoader } from 'react-three-fiber';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { AxesHelper, Clock, GridHelper, Scene } from 'three';
+import { Clock, Scene } from 'three';
 import { useAppState } from '../providers/AppProvider';
 
 interface Props {
@@ -29,12 +29,6 @@ const VRMAvatar: React.FC<Props> = (props) => {
         vrm = await VRMDebug.from(gltf);
         scene.add(vrm.scene);
         setVrmAvatar(vrm);
-
-        const gridHelper = new GridHelper(10, 10);
-        scene.add(gridHelper);
-
-        const axesHelper = new AxesHelper(5);
-        scene.add(axesHelper);
       } else {
         vrm = await VRM.from(gltf);
         setVrmAvatar(vrm);
