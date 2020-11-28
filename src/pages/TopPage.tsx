@@ -5,12 +5,13 @@ import VRMCanvasProvider from '../providers/VRMCanvasProvider';
 
 const TopPage: FC = () => {
   const url = '/models/AliciaSolid.vrm';
+  const numOfAvatars = 8;
   const cellWidth = 640;
   const cellHeight = 480;
 
   return (
     <GridList cols={2} cellHeight={cellHeight}>
-      {[...Array(8)].map((_, i) => (
+      {[...Array(numOfAvatars)].map((_, i) => (
         <GridListTile key={i} cols={1}>
           <VRMCanvasProvider>
             <VRMCanvas url={url} height={cellHeight} width={cellWidth} />
