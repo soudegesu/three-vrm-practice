@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { VRM, VRMSchema, VRMUtils } from '@pixiv/three-vrm';
-import React, { FC, Suspense, useCallback, useEffect } from 'react';
+import React, { FC, Suspense, useEffect } from 'react';
 import { Canvas, CanvasContext } from 'react-three-fiber';
 import { Vector3 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -52,9 +52,9 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
     }
   }, [vrm]);
 
-  const handleOnCreated = useCallback(({ camera }: CanvasContext) => {
+  const handleOnCreated = ({ camera }: CanvasContext) => {
     dispatch({ type: 'camera', value: { camera } });
-  }, []);
+  };
 
   useEffect(() => {
     if (animation) animation();
