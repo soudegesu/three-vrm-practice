@@ -4,7 +4,7 @@ interface AppStateProps {
   debug?: boolean;
 }
 
-const debug = process.env['REACT_APP_DEBUG'];
+const debug = process.env['REACT_APP_DEBUG'] || false;
 
 const initialState = {
   debug,
