@@ -10,9 +10,11 @@ import { useVRMCanvasDispatch, useVRMCanvasState } from '../providers/VRMCanvasP
 
 interface Props {
   url: string;
+  height: number | string;
+  width: number | string;
 }
 
-const VRMCanvas: FC<Props> = ({ url }) => {
+const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   const { vrm } = useVRMCanvasState();
   const dispatch = useVRMCanvasDispatch();
   const { animation } = useAnimation();
@@ -60,7 +62,7 @@ const VRMCanvas: FC<Props> = ({ url }) => {
 
   return (
     <Canvas
-      style={{ background: 'black', width: 640, height: 480, border: 'solid 1px black' }}
+      style={{ background: 'black', width, height, border: 'solid 1px black' }}
       camera={{ fov: 50, aspect: 4.0 / 3.0, near: 0.1, far: 5.0 }}
       onCreated={handleOnCreated}
     >
