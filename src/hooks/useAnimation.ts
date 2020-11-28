@@ -43,6 +43,7 @@ export default function useAnimation() {
     setRafId(requestAnimationFrame(animation));
     if (!clock) return;
     const elapsedTime = clock.elapsedTime;
+    // getDeltaをしないとelapsedTimeが加算されなかった
     const delta = clock.getDelta();
     if (vrm) {
       vrm.update(delta);
