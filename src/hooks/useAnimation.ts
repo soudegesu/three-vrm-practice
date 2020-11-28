@@ -2,11 +2,11 @@
 import { VRMSchema } from '@pixiv/three-vrm';
 import { useCallback, useEffect, useState } from 'react';
 import { AnimationClip, AnimationMixer, Euler, NumberKeyframeTrack, Quaternion, QuaternionKeyframeTrack } from 'three';
-import { useTopPageDispatch, useTopPageState } from '../providers/TopPageProvider';
+import { useVRMCanvasDispatch, useVRMCanvasState } from '../providers/VRMCanvasProvider';
 
 export default function useAnimation() {
-  const { vrm, mixer, clock } = useTopPageState();
-  const dispatch = useTopPageDispatch();
+  const { vrm, mixer, clock } = useVRMCanvasState();
+  const dispatch = useVRMCanvasDispatch();
   const [rafId, setRafId] = useState<number>();
 
   useEffect(() => {

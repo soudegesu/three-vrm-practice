@@ -6,15 +6,15 @@ import { Vector3 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import VRMAvatar from '../components/VRMAvatar';
 import useAnimation from '../hooks/useAnimation';
-import { useTopPageDispatch, useTopPageState } from '../providers/TopPageProvider';
+import { useVRMCanvasDispatch, useVRMCanvasState } from '../providers/VRMCanvasProvider';
 
 interface Props {
   url: string;
 }
 
 const VRMCanvas: FC<Props> = ({ url }) => {
-  const { vrm } = useTopPageState();
-  const dispatch = useTopPageDispatch();
+  const { vrm } = useVRMCanvasState();
+  const dispatch = useVRMCanvasDispatch();
   const { animation } = useAnimation();
 
   useEffect(() => {

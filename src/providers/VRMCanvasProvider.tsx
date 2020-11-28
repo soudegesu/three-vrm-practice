@@ -4,7 +4,7 @@ import { AnimationMixer, Camera, Clock, Vector3, WebGLRenderer } from 'three';
 
 type ActionType = 'vrm' | 'camera' | 'cameraPos' | 'cameraLookAt' | 'mixer';
 
-type TopPageState = {
+type VRMCanvasState = {
   vrm?: VRM;
   camera?: Camera;
   clock: Clock;
@@ -12,7 +12,7 @@ type TopPageState = {
   mixer?: AnimationMixer;
 };
 
-type TopPageAction = {
+type VRMCAnvasAction = {
   type: ActionType;
   value?: {
     vrm?: VRM;
@@ -24,7 +24,7 @@ type TopPageAction = {
   };
 };
 
-const reducer = (state: TopPageState, action: TopPageAction): TopPageState => {
+const reducer = (state: VRMCanvasState, action: VRMCAnvasAction): VRMCanvasState => {
   switch (action.type) {
     case 'vrm':
       if (action.value?.vrm) {
@@ -60,25 +60,25 @@ const reducer = (state: TopPageState, action: TopPageAction): TopPageState => {
   return state;
 };
 
-const TopPageStateContext = createContext<TopPageState>({} as TopPageState);
-const TopPageDispatchContext = createContext<Dispatch<TopPageAction>>(() => {});
+const VRMCanvasStateContext = createContext<VRMCanvasState>({} as VRMCanvasState);
+const VRMCanvasDispatchContext = createContext<Dispatch<VRMCAnvasAction>>(() => {});
 
-export function useTopPageState() {
-  return useContext(TopPageStateContext);
+export function useVRMCanvasState() {
+  return useContext(VRMCanvasStateContext);
 }
 
-export function useTopPageDispatch() {
-  return useContext(TopPageDispatchContext);
+export function useVRMCanvasDispatch() {
+  return useContext(VRMCanvasDispatchContext);
 }
 
-const TopPageProvider: FC = ({ children }) => {
+const VRMCanvasProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, { clock: new Clock(true) });
 
   return (
-    <TopPageStateContext.Provider value={state}>
-      <TopPageDispatchContext.Provider value={dispatch}>{children}</TopPageDispatchContext.Provider>
-    </TopPageStateContext.Provider>
+    <VRMCanvasStateContext.Provider value={state}>
+      <VRMCanvasDispatchContext.Provider value={dispatch}>{children}</VRMCanvasDispatchContext.Provider>
+    </VRMCanvasStateContext.Provider>
   );
 };
 
-export default TopPageProvider;
+export default VRMCanvasProvider;
