@@ -5,7 +5,7 @@ import { AnimationClip, AnimationMixer, Euler, NumberKeyframeTrack, Quaternion, 
 import { useTopPageDispatch, useTopPageState } from '../providers/TopPageProvider';
 
 export default function useAnimation() {
-  const { vrm, camera, mixer, clock } = useTopPageState();
+  const { vrm, mixer, clock } = useTopPageState();
   const dispatch = useTopPageDispatch();
   const [rafId, setRafId] = useState<number>();
 
@@ -53,7 +53,7 @@ export default function useAnimation() {
       mixer.setTime(1);
       mixer.update(elapsedTime);
     }
-  }, [vrm, mixer, camera, clock]);
+  }, [vrm, mixer, clock]);
 
   const cancelAnimation = useCallback(() => {
     if (rafId) cancelAnimationFrame(rafId);
