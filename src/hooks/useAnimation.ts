@@ -22,7 +22,7 @@ export default function useAnimation() {
 
     const armTrack = new QuaternionKeyframeTrack(
       reftArm?.name + '.quaternion',
-      [0.0, 0.5, 1.5], // times
+      [0.0, 0.5, 1.0], // times
       [...quatA.toArray(), ...quatB.toArray(), ...quatA.toArray()], // values
     );
 
