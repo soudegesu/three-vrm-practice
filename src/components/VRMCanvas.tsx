@@ -63,7 +63,7 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   return (
     <Canvas
       style={{ background: 'black', width, height, border: 'solid 1px black' }}
-      camera={{ fov: 50, aspect: 4.0 / 3.0, near: 0.1, far: 5.0 }}
+      camera={{ fov: 50, aspect: 4.0 / 3.0, near: 0.4, far: 1.0 }}
       onCreated={handleOnCreated}
     >
       <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
