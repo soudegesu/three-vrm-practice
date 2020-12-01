@@ -4,11 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { AnimationClip, AnimationMixer, Euler, NumberKeyframeTrack, Quaternion, QuaternionKeyframeTrack } from 'three';
 import { useVRMCanvasDispatch, useVRMCanvasState } from '../providers/VRMCanvasProvider';
-import { vrmState } from '../states/VRMState';
+import { clockState, vrmState } from '../states/VRMState';
 
 export default function useAnimation() {
   const vrm = useRecoilValue(vrmState);
-  const { mixer, clock } = useVRMCanvasState();
+  const clock = useRecoilValue(clockState);
+  const { mixer } = useVRMCanvasState();
   const dispatch = useVRMCanvasDispatch();
   const [rafId, setRafId] = useState<number>();
 

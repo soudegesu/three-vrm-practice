@@ -1,17 +1,15 @@
 import React, { createContext, Dispatch, FC, useContext, useReducer } from 'react';
-import { AnimationMixer, Clock, WebGLRenderer } from 'three';
+import { AnimationMixer } from 'three';
 
 type ActionType = 'mixer';
 
 type VRMCanvasState = {
-  clock: Clock;
   mixer?: AnimationMixer;
 };
 
 type VRMCAnvasAction = {
   type: ActionType;
   value?: {
-    renderer?: WebGLRenderer;
     mixer?: AnimationMixer;
   };
 };
@@ -41,7 +39,7 @@ export function useVRMCanvasDispatch() {
 }
 
 const VRMCanvasProvider: FC = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, { clock: new Clock(true) });
+  const [state, dispatch] = useReducer(reducer, {});
 
   return (
     <VRMCanvasStateContext.Provider value={state}>
