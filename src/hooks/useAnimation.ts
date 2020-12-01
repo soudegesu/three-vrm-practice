@@ -1,24 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { VRM, VRMSchema } from '@pixiv/three-vrm';
 import { useCallback, useEffect, useState } from 'react';
-import {
-  AnimationClip,
-  AnimationMixer,
-  Clock,
-  Euler,
-  NumberKeyframeTrack,
-  Quaternion,
-  QuaternionKeyframeTrack,
-} from 'three';
+import { useRecoilValue } from 'recoil';
+import { AnimationClip, AnimationMixer, Euler, NumberKeyframeTrack, Quaternion, QuaternionKeyframeTrack } from 'three';
+import { clockState, vrmState } from '../states/VRMState';
 
-interface Props {
-  vrm?: VRM;
-  clock: Clock;
-}
-
-export default function useAnimation({ vrm, clock }: Props) {
+export default function useAnimation() {
   const [mixer, setMixer] = useState<AnimationMixer>();
   const [rafId, setRafId] = useState<number>();
+  const clock = useRecoilValue(clockState);
+  const vrm = useRecoilValue(vrmState);
 
   useEffect(() => {
     if (!vrm) {

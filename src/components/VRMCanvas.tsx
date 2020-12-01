@@ -2,11 +2,11 @@
 import { VRM, VRMSchema, VRMUtils } from '@pixiv/three-vrm';
 import React, { FC, Suspense, useEffect } from 'react';
 import { Canvas, CanvasContext } from 'react-three-fiber';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilBridgeAcrossReactRoots_UNSTABLE, useRecoilState } from 'recoil';
 import { Vector3 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import VRMAvatar from '../components/VRMAvatar';
-import { cameraState, clockState, vrmState } from '../states/VRMState';
+import { cameraState, vrmState } from '../states/VRMState';
 import VRMAnimation from './VRMAnimation';
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
 const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   const [vrm, setVrm] = useRecoilState(vrmState);
   const [camera, setCamera] = useRecoilState(cameraState);
-  const clock = useRecoilValue(clockState);
+  const RecoilBridge = useRecoilBridgeAcrossReactRoots_UNSTABLE();
 
   useEffect(() => {
     (async () => {
@@ -69,11 +69,13 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
       camera={{ fov: 50, aspect: 4.0 / 3.0, near: 0.4, far: 1.0 }}
       onCreated={handleOnCreated}
     >
-      <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
-      <Suspense fallback={null}>
-        {vrm && <VRMAvatar scene={vrm.scene} />}
-        <VRMAnimation vrm={vrm} clock={clock} />
-      </Suspense>
+      <RecoilBridge>
+        <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
+        <Suspense fallback={null}>
+          {vrm && <VRMAvatar scene={vrm.scene} />}
+          <VRMAnimation />
+        </Suspense>
+      </RecoilBridge>
     </Canvas>
   );
 };
