@@ -24,3 +24,9 @@ export const mixerState = atom<AnimationMixer | undefined>({
   default: undefined,
   dangerouslyAllowMutability: true,
 });
+
+export const rafIdState = atom<number>({
+  key: 'rafIdState',
+  default: 0,
+  dangerouslyAllowMutability: true,
+});
