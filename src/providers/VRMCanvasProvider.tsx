@@ -5,7 +5,6 @@ type ActionType = 'mixer';
 
 type VRMCanvasState = {
   clock: Clock;
-  renderer?: WebGLRenderer;
   mixer?: AnimationMixer;
 };
 
