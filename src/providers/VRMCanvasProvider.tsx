@@ -1,11 +1,9 @@
-import { VRM } from '@pixiv/three-vrm';
 import React, { createContext, Dispatch, FC, useContext, useReducer } from 'react';
 import { AnimationMixer, Camera, Clock, Vector3, WebGLRenderer } from 'three';
 
 type ActionType = 'vrm' | 'camera' | 'cameraPos' | 'cameraLookAt' | 'mixer';
 
 type VRMCanvasState = {
-  vrm?: VRM;
   camera?: Camera;
   clock: Clock;
   renderer?: WebGLRenderer;
@@ -15,7 +13,6 @@ type VRMCanvasState = {
 type VRMCAnvasAction = {
   type: ActionType;
   value?: {
-    vrm?: VRM;
     camera?: Camera;
     cameraPos?: Vector3;
     cameraLookAt?: Vector3;
@@ -26,11 +23,6 @@ type VRMCAnvasAction = {
 
 const reducer = (state: VRMCanvasState, action: VRMCAnvasAction): VRMCanvasState => {
   switch (action.type) {
-    case 'vrm':
-      if (action.value?.vrm) {
-        return { ...state, vrm: action.value.vrm };
-      }
-      break;
     case 'camera':
       if (action.value?.camera) {
         return { ...state, camera: action.value.camera };

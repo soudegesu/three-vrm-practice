@@ -2,11 +2,13 @@
 import { VRM, VRMSchema, VRMUtils } from '@pixiv/three-vrm';
 import React, { FC, Suspense, useEffect } from 'react';
 import { Canvas, CanvasContext } from 'react-three-fiber';
+import { useRecoilState } from 'recoil';
 import { Vector3 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import VRMAvatar from '../components/VRMAvatar';
 import useAnimation from '../hooks/useAnimation';
-import { useVRMCanvasDispatch, useVRMCanvasState } from '../providers/VRMCanvasProvider';
+import { useVRMCanvasDispatch } from '../providers/VRMCanvasProvider';
+import { vrmState } from '../states/VRMState';
 
 interface Props {
   url: string;
@@ -15,7 +17,7 @@ interface Props {
 }
 
 const VRMCanvas: FC<Props> = ({ url, height, width }) => {
-  const { vrm } = useVRMCanvasState();
+  const [vrm, setVrm] = useRecoilState(vrmState);
   const dispatch = useVRMCanvasDispatch();
   const { animation } = useAnimation();
 
@@ -24,7 +26,7 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
       const gltf = (await new GLTFLoader().loadAsync(url, () => {})) as GLTF;
       VRMUtils.removeUnnecessaryJoints(gltf.scene);
       const vrm = await VRM.from(gltf);
-      dispatch({ type: 'vrm', value: { vrm: vrm } });
+      setVrm(vrm);
     })();
   }, [url]);
 
