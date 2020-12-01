@@ -7,7 +7,6 @@ import { Vector3 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import VRMAvatar from '../components/VRMAvatar';
 import { cameraState, vrmState } from '../states/VRMState';
-import VRMAnimation from './VRMAnimation';
 
 interface Props {
   url: string;
@@ -71,10 +70,7 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
     >
       <RecoilBridge>
         <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
-        <Suspense fallback={null}>
-          {vrm && <VRMAvatar scene={vrm.scene} />}
-          <VRMAnimation />
-        </Suspense>
+        <Suspense fallback={null}>{vrm && <VRMAvatar scene={vrm.scene} />}</Suspense>
       </RecoilBridge>
     </Canvas>
   );
