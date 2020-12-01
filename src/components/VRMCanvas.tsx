@@ -7,8 +7,7 @@ import { Vector3 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import VRMAvatar from '../components/VRMAvatar';
 import useAnimation from '../hooks/useAnimation';
-import { useVRMCanvasDispatch } from '../providers/VRMCanvasProvider';
-import { vrmState } from '../states/VRMState';
+import { cameraState, vrmState } from '../states/VRMState';
 
 interface Props {
   url: string;
@@ -18,7 +17,7 @@ interface Props {
 
 const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   const [vrm, setVrm] = useRecoilState(vrmState);
-  const dispatch = useVRMCanvasDispatch();
+  const [camera, setCamera] = useRecoilState(cameraState);
   const { animation } = useAnimation();
 
   useEffect(() => {
@@ -44,18 +43,24 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
     // 右腕を下ろす
     const rightArm = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.RightUpperArm);
     if (rightArm) rightArm.rotateZ((-Math.PI * 2) / 5);
+  }, [vrm]);
+
+  useEffect(() => {
+    if (!vrm || !camera) {
+      return;
+    }
     // 首の位置を基準にする
     const neck = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.Neck);
     if (neck) {
       const neckPos = new Vector3();
       neck.getWorldPosition(neckPos);
-      dispatch({ type: 'cameraLookAt', value: { cameraLookAt: new Vector3(0, neckPos.y, 0) } });
-      dispatch({ type: 'cameraPos', value: { cameraPos: new Vector3(0, neckPos.y, 0.5) } });
+      camera.position.set(0, neckPos.y, 0.5);
+      camera.lookAt(0, neckPos.y, 0);
     }
-  }, [vrm]);
+  }, [vrm, camera]);
 
   const handleOnCreated = ({ camera }: CanvasContext) => {
-    dispatch({ type: 'camera', value: { camera } });
+    setCamera(camera);
   };
 
   useEffect(() => {

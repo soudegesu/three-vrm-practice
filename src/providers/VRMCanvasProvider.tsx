@@ -1,10 +1,9 @@
 import React, { createContext, Dispatch, FC, useContext, useReducer } from 'react';
-import { AnimationMixer, Camera, Clock, Vector3, WebGLRenderer } from 'three';
+import { AnimationMixer, Clock, WebGLRenderer } from 'three';
 
-type ActionType = 'vrm' | 'camera' | 'cameraPos' | 'cameraLookAt' | 'mixer';
+type ActionType = 'mixer';
 
 type VRMCanvasState = {
-  camera?: Camera;
   clock: Clock;
   renderer?: WebGLRenderer;
   mixer?: AnimationMixer;
@@ -13,9 +12,6 @@ type VRMCanvasState = {
 type VRMCAnvasAction = {
   type: ActionType;
   value?: {
-    camera?: Camera;
-    cameraPos?: Vector3;
-    cameraLookAt?: Vector3;
     renderer?: WebGLRenderer;
     mixer?: AnimationMixer;
   };
@@ -23,24 +19,6 @@ type VRMCAnvasAction = {
 
 const reducer = (state: VRMCanvasState, action: VRMCAnvasAction): VRMCanvasState => {
   switch (action.type) {
-    case 'camera':
-      if (action.value?.camera) {
-        return { ...state, camera: action.value.camera };
-      }
-      break;
-    case 'cameraPos':
-      if (action.value?.cameraPos && state.camera) {
-        const currentCamera = state.camera;
-        currentCamera.position.set(action.value.cameraPos.x, action.value.cameraPos.y, action.value.cameraPos.z);
-        return { ...state };
-      }
-      break;
-    case 'cameraLookAt':
-      if (action.value?.cameraLookAt && state.camera) {
-        const currentCamera = state.camera;
-        currentCamera.lookAt(action.value.cameraLookAt.x, action.value.cameraLookAt.y, action.value.cameraLookAt.z);
-      }
-      break;
     case 'mixer':
       if (action.value?.mixer) {
         return { ...state, mixer: action.value.mixer };
