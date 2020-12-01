@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { VRM, VRMSchema } from '@pixiv/three-vrm';
+import { VRMSchema } from '@pixiv/three-vrm';
 import { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { AnimationClip, AnimationMixer, Euler, NumberKeyframeTrack, Quaternion, QuaternionKeyframeTrack } from 'three';
@@ -43,7 +43,6 @@ export default function useAnimation() {
 
   const animation = useCallback(() => {
     setRafId(requestAnimationFrame(animation));
-    if (!clock) return;
     const elapsedTime = clock.elapsedTime;
     // getDeltaをしないとelapsedTimeが加算されなかった
     const delta = clock.getDelta();
