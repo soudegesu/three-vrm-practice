@@ -3,13 +3,14 @@ import { VRMSchema } from '@pixiv/three-vrm';
 import { useCallback, useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { AnimationClip, AnimationMixer, Euler, NumberKeyframeTrack, Quaternion, QuaternionKeyframeTrack } from 'three';
-import { clockState, vrmState } from '../states/VRMState';
+import { clockState, statsState, vrmState } from '../states/VRMState';
 
 export default function useAnimation() {
   const [mixer, setMixer] = useState<AnimationMixer>();
   const [rafId, setRafId] = useState<number>();
   const clock = useRecoilValue(clockState);
   const vrm = useRecoilValue(vrmState);
+  const stats = useRecoilValue(statsState);
 
   useEffect(() => {
     if (!vrm) {

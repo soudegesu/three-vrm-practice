@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { VRM, VRMSchema, VRMUtils } from '@pixiv/three-vrm';
-import React, { FC, Suspense, useEffect } from 'react';
+import React, { FC, Suspense, useEffect, useRef } from 'react';
 import { Canvas, CanvasContext } from 'react-three-fiber';
-import { useRecoilBridgeAcrossReactRoots_UNSTABLE, useRecoilState } from 'recoil';
+import { useRecoilBridgeAcrossReactRoots_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil';
 import { Vector3 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import VRMAvatar from '../components/VRMAvatar';
-import { cameraState, vrmState } from '../states/VRMState';
+import { cameraState, statsState, vrmState } from '../states/VRMState';
 
 interface Props {
   url: string;
@@ -18,6 +18,8 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   const [vrm, setVrm] = useRecoilState(vrmState);
   const [camera, setCamera] = useRecoilState(cameraState);
   const RecoilBridge = useRecoilBridgeAcrossReactRoots_UNSTABLE();
+  const ref = useRef<HTMLDivElement | null>(null);
+  const stats = useRecoilValue(statsState);
 
   useEffect(() => {
     (async () => {
@@ -62,17 +64,27 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
     setCamera(camera);
   };
 
+  useEffect(() => {
+    if (ref && ref.current) {
+      stats.showPanel(0);
+      ref.current.appendChild(stats.dom);
+    }
+  }, [ref]);
+
   return (
-    <Canvas
-      style={{ background: 'black', width, height, border: 'solid 1px black' }}
-      camera={{ fov: 50, aspect: 4.0 / 3.0, near: 0.4, far: 1.0 }}
-      onCreated={handleOnCreated}
-    >
-      <RecoilBridge>
-        <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
-        <Suspense fallback={null}>{vrm && <VRMAvatar scene={vrm.scene} />}</Suspense>
-      </RecoilBridge>
-    </Canvas>
+    <>
+      <div ref={ref}></div>
+      <Canvas
+        style={{ background: 'black', width, height, border: 'solid 1px black' }}
+        camera={{ fov: 50, aspect: 4.0 / 3.0, near: 0.4, far: 1.0 }}
+        onCreated={handleOnCreated}
+      >
+        <RecoilBridge>
+          <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
+          <Suspense fallback={null}>{vrm && <VRMAvatar scene={vrm.scene} />}</Suspense>
+        </RecoilBridge>
+      </Canvas>
+    </>
   );
 };
 
