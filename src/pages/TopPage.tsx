@@ -2,7 +2,6 @@ import { GridList, GridListTile } from '@material-ui/core';
 import React, { FC } from 'react';
 import { RecoilRoot } from 'recoil';
 import VRMCanvas from '../components/VRMCanvas';
-import VRMCanvasProvider from '../providers/VRMCanvasProvider';
 
 const TopPage: FC = () => {
   const url = '/models/AliciaSolid.vrm';
@@ -15,9 +14,7 @@ const TopPage: FC = () => {
       {[...Array(numOfAvatars)].map((_, i) => (
         <GridListTile key={i} cols={1}>
           <RecoilRoot>
-            <VRMCanvasProvider>
-              <VRMCanvas url={url} height={cellHeight} width={cellWidth} />
-            </VRMCanvasProvider>
+            <VRMCanvas url={url} height={cellHeight} width={cellWidth} />
           </RecoilRoot>
         </GridListTile>
       ))}

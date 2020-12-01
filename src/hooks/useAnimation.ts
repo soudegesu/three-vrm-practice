@@ -1,16 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { VRMSchema } from '@pixiv/three-vrm';
 import { useCallback, useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { AnimationClip, AnimationMixer, Euler, NumberKeyframeTrack, Quaternion, QuaternionKeyframeTrack } from 'three';
-import { useVRMCanvasDispatch, useVRMCanvasState } from '../providers/VRMCanvasProvider';
-import { clockState, vrmState } from '../states/VRMState';
+import { clockState, mixerState, vrmState } from '../states/VRMState';
 
 export default function useAnimation() {
   const vrm = useRecoilValue(vrmState);
   const clock = useRecoilValue(clockState);
-  const { mixer } = useVRMCanvasState();
-  const dispatch = useVRMCanvasDispatch();
+  const [mixer, setMixer] = useRecoilState(mixerState);
   const [rafId, setRafId] = useState<number>();
 
   useEffect(() => {
@@ -40,7 +38,7 @@ export default function useAnimation() {
     const currentMixer = new AnimationMixer(vrm.scene);
     const action = currentMixer.clipAction(clip);
     action.play();
-    dispatch({ type: 'mixer', value: { mixer: currentMixer } });
+    setMixer(currentMixer);
   }, [vrm]);
 
   const animation = useCallback(() => {
