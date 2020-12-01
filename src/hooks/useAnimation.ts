@@ -12,7 +12,7 @@ import {
 } from 'three';
 
 interface Props {
-  vrm: VRM;
+  vrm?: VRM;
   clock: Clock;
 }
 

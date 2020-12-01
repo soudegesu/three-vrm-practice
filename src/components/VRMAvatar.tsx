@@ -1,21 +1,12 @@
-import { VRM } from '@pixiv/three-vrm';
-import React, { FC, useEffect } from 'react';
-import { Clock } from 'three';
-import useAnimation from '../hooks/useAnimation';
+import React, { FC } from 'react';
+import { Group, Scene } from 'three';
 
 interface Props {
-  vrm: VRM;
-  clock: Clock;
+  scene: Scene | Group;
 }
 
-const VRMAvatar: FC<Props> = ({ vrm, clock }) => {
-  const { animation } = useAnimation({ vrm, clock });
-
-  useEffect(() => {
-    animation();
-  }, [animation]);
-
-  return <primitive object={vrm.scene} dispose={null} />;
+const VRMAvatar: FC<Props> = ({ scene }) => {
+  return <primitive object={scene} dispose={null} />;
 };
 
 export default VRMAvatar;

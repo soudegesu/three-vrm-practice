@@ -7,6 +7,7 @@ import { Vector3 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import VRMAvatar from '../components/VRMAvatar';
 import { cameraState, clockState, vrmState } from '../states/VRMState';
+import VRMAnimation from './VRMAnimation';
 
 interface Props {
   url: string;
@@ -69,7 +70,10 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
       onCreated={handleOnCreated}
     >
       <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
-      <Suspense fallback={null}>{vrm?.scene && <VRMAvatar vrm={vrm} clock={clock} />}</Suspense>
+      <Suspense fallback={null}>
+        {vrm && <VRMAvatar scene={vrm.scene} />}
+        <VRMAnimation vrm={vrm} clock={clock} />
+      </Suspense>
     </Canvas>
   );
 };
