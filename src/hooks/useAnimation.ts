@@ -11,8 +11,6 @@ export default function useAnimation() {
   const stats = useRecoilValue(statsState);
 
   const animation = useCallback(() => {
-    // const elapsedTime = clock.elapsedTime;
-    // getDeltaをしないとelapsedTimeが加算されなかった
     const delta = clock.getDelta();
     if (vrm) {
       vrm.update(delta);
