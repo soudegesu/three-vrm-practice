@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Box } from '@material-ui/core';
 import { VRM, VRMSchema, VRMUtils } from '@pixiv/three-vrm';
 import React, { FC, Suspense, useEffect, useRef } from 'react';
 import { Canvas, CanvasContext } from 'react-three-fiber';
@@ -106,6 +107,7 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   useEffect(() => {
     if (ref && ref.current) {
       stats.showPanel(0);
+      // stats.dom.style.position = 'absolute';
       ref.current.appendChild(stats.dom);
     }
   }, [ref]);

@@ -5,7 +5,7 @@ import VRMCanvas from '../components/VRMCanvas';
 
 const TopPage: FC = () => {
   const url = '/models/AliciaSolid.vrm';
-  const numOfAvatars = 1;
+  const numOfAvatars = 2;
   const cellWidth = 640;
   const cellHeight = 480;
 
