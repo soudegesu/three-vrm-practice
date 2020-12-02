@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCallback, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import { clockState, mixerState, reactionMixerState, statsState, vrmState } from '../states/VRMState';
+import { clockState, mixerState, statsState, vrmState } from '../states/VRMState';
 
 export default function useAnimation() {
   const mixer = useRecoilValue(mixerState);
@@ -9,11 +9,9 @@ export default function useAnimation() {
   const clock = useRecoilValue(clockState);
   const vrm = useRecoilValue(vrmState);
   const stats = useRecoilValue(statsState);
-  const reactionMixer = useRecoilValue(reactionMixerState);
 
   const animation = useCallback(() => {
-    setRafId(requestAnimationFrame(animation));
-    const elapsedTime = clock.elapsedTime;
+    // const elapsedTime = clock.elapsedTime;
     // getDeltaをしないとelapsedTimeが加算されなかった
     const delta = clock.getDelta();
     if (vrm) {
@@ -21,14 +19,10 @@ export default function useAnimation() {
     }
 
     if (mixer) {
-      mixer.setTime(1);
-      mixer.update(elapsedTime);
-    }
-    if (reactionMixer) {
-      reactionMixer.setTime(1);
-      reactionMixer.update(elapsedTime);
+      mixer.update(delta);
     }
     stats.update();
+    setRafId(requestAnimationFrame(animation));
   }, []);
 
   const cancelAnimation = useCallback(() => {

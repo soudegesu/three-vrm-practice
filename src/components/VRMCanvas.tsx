@@ -2,11 +2,12 @@
 import { VRM, VRMSchema, VRMUtils } from '@pixiv/three-vrm';
 import React, { FC, Suspense, useEffect, useRef } from 'react';
 import { Canvas, CanvasContext } from 'react-three-fiber';
-import { useRecoilBridgeAcrossReactRoots_UNSTABLE, useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilBridgeAcrossReactRoots_UNSTABLE, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import {
   AnimationClip,
   AnimationMixer,
   Euler,
+  LoopOnce,
   NumberKeyframeTrack,
   Quaternion,
   QuaternionKeyframeTrack,
@@ -14,7 +15,14 @@ import {
 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import VRMAvatar from '../components/VRMAvatar';
-import { cameraState, mixerState, statsState, vrmState } from '../states/VRMState';
+import {
+  blinkAnimationActionState,
+  cameraState,
+  funAnimationActionState,
+  mixerState,
+  statsState,
+  vrmState,
+} from '../states/VRMState';
 
 interface Props {
   url: string;
@@ -26,6 +34,8 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   const [vrm, setVrm] = useRecoilState(vrmState);
   const [camera, setCamera] = useRecoilState(cameraState);
   const [mixer, setMixer] = useRecoilState(mixerState);
+  const setFunActionState = useSetRecoilState(funAnimationActionState);
+  const setBlinkActionState = useSetRecoilState(blinkAnimationActionState);
   const RecoilBridge = useRecoilBridgeAcrossReactRoots_UNSTABLE();
   const ref = useRef<HTMLDivElement | null>(null);
   const stats = useRecoilValue(statsState);
@@ -73,6 +83,11 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
     if (!vrm) {
       return;
     }
+    // Animation Mixerを作成
+    const currentMixer = new AnimationMixer(vrm.scene);
+    setMixer(currentMixer);
+
+    // まばたき
     const reftArm = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.LeftUpperArm);
     const blink = vrm.blendShapeProxy?.getBlendShapeTrackName(VRMSchema.BlendShapePresetName.Blink);
 
@@ -92,11 +107,26 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
       [0.0, 1.0, 0.0], // values
     );
 
+    const fun = vrm.blendShapeProxy?.getBlendShapeTrackName(VRMSchema.BlendShapePresetName.O);
+    const funTrack = new NumberKeyframeTrack(
+      fun ? fun : '',
+      [0.0, 0.2, 0.6, 1.0], // times
+      [0.0, 1.0, 1.0, 0.0], // values
+    );
+
+    // Actionの登録
+    const funClip = new AnimationClip('iine', 1.5, [funTrack]);
+    const funAction = currentMixer.clipAction(funClip);
+    funAction.weight = 1;
+    funAction.clampWhenFinished = true;
+    funAction.enabled = true;
+    funAction.setLoop(LoopOnce, 0);
+    setFunActionState(funAction);
+
     const clip = new AnimationClip('blink', 1.0, [armTrack, blinkTrack]);
-    const currentMixer = new AnimationMixer(vrm.scene);
-    const action = currentMixer.clipAction(clip);
-    action.play();
-    setMixer(currentMixer);
+    const blinkAction = currentMixer.clipAction(clip);
+    blinkAction.play();
+    setBlinkActionState(blinkAction);
   }, [vrm]);
 
   const handleOnCreated = ({ camera }: CanvasContext) => {

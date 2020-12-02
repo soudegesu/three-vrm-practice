@@ -1,6 +1,6 @@
 import { VRM } from '@pixiv/three-vrm';
 import { atom } from 'recoil';
-import { AnimationMixer, Camera, Clock } from 'three';
+import { AnimationAction, AnimationMixer, Camera, Clock } from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module';
 
 export const vrmState = atom<VRM | undefined>({
@@ -26,8 +26,14 @@ export const mixerState = atom<AnimationMixer | undefined>({
   dangerouslyAllowMutability: true,
 });
 
-export const reactionMixerState = atom<AnimationMixer | undefined>({
-  key: 'reactionMixerState',
+export const blinkAnimationActionState = atom<AnimationAction | undefined>({
+  key: 'blinkAnimationActionState',
+  default: undefined,
+  dangerouslyAllowMutability: true,
+});
+
+export const funAnimationActionState = atom<AnimationAction | undefined>({
+  key: 'funAnimationActionState',
   default: undefined,
   dangerouslyAllowMutability: true,
 });
