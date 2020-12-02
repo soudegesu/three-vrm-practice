@@ -1,7 +1,7 @@
 import { Box, GridList, GridListTile } from '@material-ui/core';
 import React, { FC } from 'react';
 import { RecoilRoot } from 'recoil';
-import AngryButton from '../components/AngryButton';
+import AngryButton from '../components/action/AngryButton';
 import VRMCanvas from '../components/VRMCanvas';
 
 const TopPage: FC = () => {

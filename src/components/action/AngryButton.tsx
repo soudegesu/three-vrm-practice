@@ -1,7 +1,7 @@
 import { Button } from '@material-ui/core';
 import React, { FC } from 'react';
 import { useRecoilValue } from 'recoil';
-import { funAnimationActionState } from '../states/VRMState';
+import { funAnimationActionState } from '../../states/VRMState';
 
 const AngryButton: FC = () => {
   const funAction = useRecoilValue(funAnimationActionState);
