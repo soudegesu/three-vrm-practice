@@ -1,7 +1,7 @@
 import { Box, GridList, GridListTile } from '@material-ui/core';
 import React, { FC } from 'react';
 import { RecoilRoot } from 'recoil';
-import ReactionButton from '../components/ReactionButton';
+import AngryButton from '../components/AngryButton';
 import VRMCanvas from '../components/VRMCanvas';
 
 const TopPage: FC = () => {
@@ -20,7 +20,7 @@ const TopPage: FC = () => {
               <VRMCanvas url={url} height={canvasHeight} width={canvasWidth} />
             </Box>
             <Box marginTop={1}>
-              <ReactionButton />
+              <AngryButton />
             </Box>
           </RecoilRoot>
         </GridListTile>

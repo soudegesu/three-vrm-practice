@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useRecoilValue } from 'recoil';
 import { funAnimationActionState } from '../states/VRMState';
 
-const ReactionButton: FC = () => {
+const AngryButton: FC = () => {
   const funAction = useRecoilValue(funAnimationActionState);
 
   const handleOnClick = () => {
@@ -18,9 +18,9 @@ const ReactionButton: FC = () => {
 
   return (
     <Button color="primary" variant="contained" onClick={handleOnClick}>
-      Action O
+      Angry
     </Button>
   );
 };
 
-export default ReactionButton;
+export default AngryButton;
