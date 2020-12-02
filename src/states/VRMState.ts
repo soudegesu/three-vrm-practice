@@ -26,6 +26,12 @@ export const mixerState = atom<AnimationMixer | undefined>({
   dangerouslyAllowMutability: true,
 });
 
+export const reactionMixerState = atom<AnimationMixer | undefined>({
+  key: 'reactionMixerState',
+  default: undefined,
+  dangerouslyAllowMutability: true,
+});
+
 export const statsState = atom<Stats>({
   key: 'statsState',
   default: Stats(),
