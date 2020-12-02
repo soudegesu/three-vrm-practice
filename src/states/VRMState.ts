@@ -26,8 +26,8 @@ export const mixerState = atom<AnimationMixer | undefined>({
   dangerouslyAllowMutability: true,
 });
 
-export const blinkAnimationActionState = atom<AnimationAction | undefined>({
-  key: 'blinkAnimationActionState',
+export const armAnimationActionState = atom<AnimationAction | undefined>({
+  key: 'armAnimationActionState',
   default: undefined,
   dangerouslyAllowMutability: true,
 });

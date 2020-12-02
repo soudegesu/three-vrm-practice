@@ -16,13 +16,14 @@ import {
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import VRMAvatar from '../components/VRMAvatar';
 import {
-  blinkAnimationActionState,
+  armAnimationActionState as armAnimationActionState,
   cameraState,
   funAnimationActionState,
   mixerState,
   statsState,
   vrmState,
 } from '../states/VRMState';
+import { createAngryAction, createArmAction } from '../util/animationActionCreator';
 
 interface Props {
   url: string;
@@ -35,7 +36,7 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   const [camera, setCamera] = useRecoilState(cameraState);
   const [mixer, setMixer] = useRecoilState(mixerState);
   const setFunActionState = useSetRecoilState(funAnimationActionState);
-  const setBlinkActionState = useSetRecoilState(blinkAnimationActionState);
+  const setArmActionState = useSetRecoilState(armAnimationActionState);
   const RecoilBridge = useRecoilBridgeAcrossReactRoots_UNSTABLE();
   const ref = useRef<HTMLDivElement | null>(null);
   const stats = useRecoilValue(statsState);
@@ -84,49 +85,17 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
       return;
     }
     // Animation Mixerを作成
-    const currentMixer = new AnimationMixer(vrm.scene);
-    setMixer(currentMixer);
+    const mixer = new AnimationMixer(vrm.scene);
+    setMixer(mixer);
 
-    // まばたき
-    const reftArm = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.LeftUpperArm);
-    const blink = vrm.blendShapeProxy?.getBlendShapeTrackName(VRMSchema.BlendShapePresetName.Blink);
+    // 怒った顔
+    const angryAction = createAngryAction({ vrm, mixer });
+    setFunActionState(angryAction);
 
-    const quatA = new Quaternion(0.0, 0.0, 0.0, 1.0);
-    const quatB = new Quaternion(0.0, 0.0, 0.0, 1.0);
-    quatB.setFromEuler(new Euler(0.0, 0.0, 0.25 * Math.PI));
-
-    const armTrack = new QuaternionKeyframeTrack(
-      reftArm?.name + '.quaternion',
-      [0.0, 0.5, 1.0], // times
-      [...quatA.toArray(), ...quatB.toArray(), ...quatA.toArray()], // values
-    );
-
-    const blinkTrack = new NumberKeyframeTrack(
-      blink ? blink : '',
-      [0.0, 0.5, 1.0], // times
-      [0.0, 1.0, 0.0], // values
-    );
-
-    const fun = vrm.blendShapeProxy?.getBlendShapeTrackName(VRMSchema.BlendShapePresetName.O);
-    const funTrack = new NumberKeyframeTrack(
-      fun ? fun : '',
-      [0.0, 0.2, 0.6, 1.0], // times
-      [0.0, 1.0, 1.0, 0.0], // values
-    );
-
-    // Actionの登録
-    const funClip = new AnimationClip('iine', 1.5, [funTrack]);
-    const funAction = currentMixer.clipAction(funClip);
-    funAction.weight = 1;
-    funAction.clampWhenFinished = true;
-    funAction.enabled = true;
-    funAction.setLoop(LoopOnce, 0);
-    setFunActionState(funAction);
-
-    const clip = new AnimationClip('blink', 1.0, [armTrack, blinkTrack]);
-    const blinkAction = currentMixer.clipAction(clip);
-    blinkAction.play();
-    setBlinkActionState(blinkAction);
+    // 腕を上げ下げする
+    const armAction = createArmAction({ vrm, mixer });
+    armAction.play();
+    setArmActionState(armAction);
   }, [vrm]);
 
   const handleOnCreated = ({ camera }: CanvasContext) => {
