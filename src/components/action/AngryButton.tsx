@@ -1,19 +1,21 @@
 import { Button } from '@material-ui/core';
 import React, { FC } from 'react';
 import { useRecoilValue } from 'recoil';
-import { funAnimationActionState } from '../../states/VRMState';
+import { useCanvasState } from '../../provider/CanvasProvider';
+import { angryAnimationAtomFamily } from '../../states/VRMState';
 
 const AngryButton: FC = () => {
-  const funAction = useRecoilValue(funAnimationActionState);
+  const { canvasId } = useCanvasState();
+  const angryAction = useRecoilValue(angryAnimationAtomFamily(canvasId));
 
   const handleOnClick = () => {
-    if (!funAction) {
+    if (!angryAction) {
       return;
     }
-    funAction.play();
+    angryAction.play();
     setTimeout(() => {
-      funAction.stop();
-    }, funAction.getClip().duration * 1000);
+      angryAction.stop();
+    }, angryAction.getClip().duration * 1000);
   };
 
   return (

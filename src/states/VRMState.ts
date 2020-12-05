@@ -1,44 +1,50 @@
 import { VRM } from '@pixiv/three-vrm';
-import { atom } from 'recoil';
+import { atom, atomFamily } from 'recoil';
 import { AnimationAction, AnimationMixer, Camera, Clock } from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module';
 
-export const vrmState = atom<VRM | undefined>({
-  key: 'vrmState',
-  default: undefined,
-  dangerouslyAllowMutability: true,
-});
+const atomKeyPrefix = 'atom';
+const atomFamilyKeyPrefix = 'atomFamily';
 
-export const cameraState = atom<Camera | undefined>({
-  key: 'cameraState',
-  default: undefined,
-  dangerouslyAllowMutability: true,
-});
+type CanvasId = number;
 
-export const clockState = atom<Clock>({
-  key: 'clockState',
-  default: new Clock(true),
-});
-
-export const mixerState = atom<AnimationMixer | undefined>({
-  key: 'mixerState',
-  default: undefined,
-  dangerouslyAllowMutability: true,
-});
-
-export const armAnimationActionState = atom<AnimationAction | undefined>({
-  key: 'armAnimationActionState',
-  default: undefined,
-  dangerouslyAllowMutability: true,
-});
-
-export const funAnimationActionState = atom<AnimationAction | undefined>({
-  key: 'funAnimationActionState',
-  default: undefined,
-  dangerouslyAllowMutability: true,
-});
-
-export const statsState = atom<Stats>({
-  key: 'statsState',
+export const statsAtom = atom<Stats>({
+  key: `${atomKeyPrefix}/stats`,
   default: Stats(),
+});
+
+export const clockAtomFamily = atomFamily<Clock, CanvasId>({
+  key: `${atomKeyPrefix}/clock`,
+  default: new Clock(true),
+  dangerouslyAllowMutability: true,
+});
+
+export const vrmAtomFamily = atomFamily<VRM | undefined, CanvasId>({
+  key: `${atomFamilyKeyPrefix}/vrm`,
+  default: undefined,
+  dangerouslyAllowMutability: true,
+});
+
+export const cameraAtomFamily = atomFamily<Camera | undefined, CanvasId>({
+  key: `${atomFamilyKeyPrefix}/camera`,
+  default: undefined,
+  dangerouslyAllowMutability: true,
+});
+
+export const mixerAtomFamily = atomFamily<AnimationMixer | undefined, CanvasId>({
+  key: `${atomFamilyKeyPrefix}/mixer`,
+  default: undefined,
+  dangerouslyAllowMutability: true,
+});
+
+export const armAnimationAtomFamily = atomFamily<AnimationAction | undefined, CanvasId>({
+  key: `${atomFamilyKeyPrefix}/animation/arm`,
+  default: undefined,
+  dangerouslyAllowMutability: true,
+});
+
+export const angryAnimationAtomFamily = atomFamily<AnimationAction | undefined, CanvasId>({
+  key: `${atomFamilyKeyPrefix}/animation/angry`,
+  default: undefined,
+  dangerouslyAllowMutability: true,
 });

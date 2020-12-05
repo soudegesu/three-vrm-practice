@@ -4,6 +4,7 @@ import { RecoilRoot } from 'recoil';
 import AngryButton from '../components/action/AngryButton';
 import LikeButton from '../components/action/LikeButton';
 import VRMCanvas from '../components/VRMCanvas';
+import CanvasProvider from '../provider/CanvasProvider';
 
 const TopPage: FC = () => {
   const url = '/models/AliciaSolid.vrm';
@@ -13,27 +14,29 @@ const TopPage: FC = () => {
   const canvasHeight = 480;
 
   return (
-    <GridList cols={2} cellHeight={cellHeight}>
-      {[...Array(numOfAvatars)].map((_, i) => (
-        <GridListTile key={i} cols={1}>
-          <RecoilRoot>
-            <Box>
-              <VRMCanvas url={url} height={canvasHeight} width={canvasWidth} />
-            </Box>
-            <Box marginTop={1}>
-              <Grid container spacing={1}>
-                <Grid item>
-                  <AngryButton />
+    <RecoilRoot>
+      <GridList cols={2} cellHeight={cellHeight}>
+        {[...Array(numOfAvatars)].map((_, i) => (
+          <CanvasProvider key={i} canvasId={i}>
+            <GridListTile cols={1}>
+              <Box>
+                <VRMCanvas url={url} height={canvasHeight} width={canvasWidth} />
+              </Box>
+              <Box marginTop={1}>
+                <Grid container spacing={1}>
+                  <Grid item>
+                    <AngryButton />
+                  </Grid>
+                  <Grid item>
+                    <LikeButton />
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <LikeButton />
-                </Grid>
-              </Grid>
-            </Box>
-          </RecoilRoot>
-        </GridListTile>
-      ))}
-    </GridList>
+              </Box>
+            </GridListTile>
+          </CanvasProvider>
+        ))}
+      </GridList>
+    </RecoilRoot>
   );
 };
 

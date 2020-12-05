@@ -2,10 +2,10 @@
 import React, { FC, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import useAnimation from '../hooks/useAnimation';
-import { statsState } from '../states/VRMState';
+import { statsAtom } from '../states/VRMState';
 
 const VRMAnimation: FC = () => {
-  const stats = useRecoilValue(statsState);
+  const stats = useRecoilValue(statsAtom);
   const { animation } = useAnimation();
 
   useEffect(() => {
