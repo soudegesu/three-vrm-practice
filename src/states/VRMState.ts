@@ -1,26 +1,43 @@
 import { VRM } from '@pixiv/three-vrm';
 import { atom, atomFamily } from 'recoil';
-import { AnimationAction, AnimationMixer, Camera, Clock } from 'three';
+import { AnimationAction, AnimationMixer, Camera, Clock, Scene, WebGLRenderer } from 'three';
 import Stats from 'three/examples/jsm/libs/stats.module';
 
 const atomKeyPrefix = 'atom';
 const atomFamilyKeyPrefix = 'atomFamily';
 
-type CanvasId = number;
+export type CanvasId = number;
 
 export const statsAtom = atom<Stats>({
   key: `${atomKeyPrefix}/stats`,
   default: Stats(),
 });
 
+export const rafIdAtom = atom<number>({
+  key: `${atomKeyPrefix}/rafId`,
+  default: 0,
+});
+
 export const clockAtomFamily = atomFamily<Clock, CanvasId>({
   key: `${atomKeyPrefix}/clock`,
-  default: new Clock(false),
+  default: new Clock(true),
   dangerouslyAllowMutability: true,
 });
 
 export const vrmAtomFamily = atomFamily<VRM | undefined, CanvasId>({
   key: `${atomFamilyKeyPrefix}/vrm`,
+  default: undefined,
+  dangerouslyAllowMutability: true,
+});
+
+export const sceneAtomFamily = atomFamily<Scene | undefined, CanvasId>({
+  key: `${atomFamilyKeyPrefix}/scene`,
+  default: undefined,
+  dangerouslyAllowMutability: true,
+});
+
+export const rendererAtomFamily = atomFamily<WebGLRenderer | undefined, CanvasId>({
+  key: `${atomFamilyKeyPrefix}/renderer`,
   default: undefined,
   dangerouslyAllowMutability: true,
 });

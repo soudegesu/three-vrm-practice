@@ -1,56 +1,56 @@
-import { FC, useCallback, useEffect } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { FC, useEffect } from 'react';
+import { useRecoilCallback, useRecoilState, useRecoilValue } from 'recoil';
 import {
-  // addCanvasAnimationSelector,
   cameraAtomFamily,
-  // canvasAnimationsAtom,
   clockAtomFamily,
-  // mixerAtomFamily,
-  // rafIdAtom,
-  // rendererAtomFamily,
-  // sceneAtomFamily,
+  mixerAtomFamily,
+  rafIdAtom,
+  rendererAtomFamily,
+  sceneAtomFamily,
   statsAtom,
   vrmAtomFamily,
 } from '../states/VRMState';
 
 const AnimationWorker: FC = () => {
+  const canvasId = 0;
   const stats = useRecoilValue(statsAtom);
-  // const [rafId, setRafId] = useRecoilState(rafIdAtom);
-  // const canvasAnimations = useRecoilValue(addCanvasAnimationSelector);
+  const [rafId, setRafId] = useRecoilState(rafIdAtom);
 
-  // const mixer = useRecoilValue(mixerAtomFamily(0));
-  // const clock = useRecoilValue(clockAtomFamily(0));
-  // const vrm = useRecoilValue(vrmAtomFamily(0));
-  // const scene = useRecoilValue(sceneAtomFamily(0));
-  // const renderer = useRecoilValue(rendererAtomFamily(0));
-  // const camera = useRecoilValue(cameraAtomFamily(0));
+  const runWorker = useRecoilCallback(
+    ({ snapshot }) => async () => {
+      const clock = await snapshot.getPromise(clockAtomFamily(canvasId));
+      const vrm = await snapshot.getPromise(vrmAtomFamily(canvasId));
+      const mixer = await snapshot.getPromise(mixerAtomFamily(canvasId));
+      const renderer = await snapshot.getPromise(rendererAtomFamily(canvasId));
+      const camera = await snapshot.getPromise(cameraAtomFamily(canvasId));
+      const scene = await snapshot.getPromise(sceneAtomFamily(canvasId));
+      const delta = clock.getDelta();
+      if (vrm) {
+        vrm.update(delta);
+      }
+      if (mixer) {
+        mixer.update(delta);
+      }
+      if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+      }
+      stats.update();
+      setRafId(requestAnimationFrame(runWorker));
+    },
+    [],
+  );
 
-  // const cancelAnimation = useCallback(() => {
-  //   if (rafId) cancelAnimationFrame(rafId);
-  // }, [rafId]);
+  useEffect(() => {
+    stats.begin();
+    runWorker();
+    stats.end();
+  }, []);
 
-  // const animation = useCallback(() => {
-  //   // console.log(renderer);
-  //   // console.log(camera);
-  //   if (canvasAnimations && canvasAnimations.length) {
-  //     const hoge = canvasAnimations[0];
-  //     hoge.execute();
-  //   }
-  //   stats.update();
-  //   setRafId(requestAnimationFrame(animation));
-  // }, []);
-
-  // useEffect(() => {
-  //   stats.begin();
-  //   animation();
-  //   stats.end();
-  // }, []);
-
-  // useEffect(() => {
-  //   return () => {
-  //     if (cancelAnimation) cancelAnimation();
-  //   };
-  // }, [cancelAnimation]);
+  useEffect(() => {
+    return () => {
+      if (rafId !== undefined) cancelAnimationFrame(rafId);
+    };
+  }, []);
 
   return null;
 };

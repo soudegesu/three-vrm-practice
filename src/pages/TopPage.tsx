@@ -3,13 +3,14 @@ import React, { FC } from 'react';
 import { RecoilRoot } from 'recoil';
 import AngryButton from '../components/action/AngryButton';
 import LikeButton from '../components/action/LikeButton';
+import AnimationWorker from '../components/AnimationWorker';
 import StatsPanel from '../components/top/StatsPanel';
-import VRMCanvas from '../components/VRMCanvas';
+import VRMCanvas from '../components/vrm/VRMCanvas';
 import CanvasProvider from '../provider/CanvasProvider';
 
 const TopPage: FC = () => {
   const url = '/models/AliciaSolid.vrm';
-  const numOfAvatars = 2;
+  const numOfAvatars = 1;
   const cellHeight = 700;
   const canvasWidth = 640;
   const canvasHeight = 480;
@@ -38,6 +39,7 @@ const TopPage: FC = () => {
           </CanvasProvider>
         ))}
       </GridList>
+      <AnimationWorker />
     </RecoilRoot>
   );
 };

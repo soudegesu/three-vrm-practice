@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { VRM, VRMSchema, VRMUtils } from '@pixiv/three-vrm';
-import React, { FC, Suspense, useEffect, useRef } from 'react';
+import React, { FC, Suspense, useEffect } from 'react';
 import { Canvas, CanvasContext } from 'react-three-fiber';
-import { useRecoilBridgeAcrossReactRoots_UNSTABLE, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilBridgeAcrossReactRoots_UNSTABLE, useRecoilState, useSetRecoilState } from 'recoil';
 import { AnimationMixer, Vector3 } from 'three';
 import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import VRMAvatar from '../components/VRMAvatar';
-import { CanvasStateContext, useCanvasState } from '../provider/CanvasProvider';
+import VRMAvatar from '../../components/vrm/VRMAvatar';
+import { CanvasStateContext, useCanvasState } from '../../provider/CanvasProvider';
 import {
   armAnimationAtomFamily,
   cameraAtomFamily,
   angryAnimationAtomFamily,
   mixerAtomFamily,
-  statsAtom,
   vrmAtomFamily,
-} from '../states/VRMState';
-import { createAngryAction, createArmAction } from '../util/animationActionCreator';
-import VRMAnimation from './VRMAnimation';
+  rendererAtomFamily,
+  sceneAtomFamily,
+} from '../../states/VRMState';
+import { createAngryAction, createArmAction } from '../../util/animationActionCreator';
 
 interface Props {
   url: string;
@@ -29,8 +29,10 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   const [vrm, setVrm] = useRecoilState(vrmAtomFamily(canvasId));
   const [camera, setCamera] = useRecoilState(cameraAtomFamily(canvasId));
   const [mixer, setMixer] = useRecoilState(mixerAtomFamily(canvasId));
+  const setRenderer = useSetRecoilState(rendererAtomFamily(canvasId));
   const setFunActionState = useSetRecoilState(angryAnimationAtomFamily(canvasId));
   const setArmActionState = useSetRecoilState(armAnimationAtomFamily(canvasId));
+  const setScene = useSetRecoilState(sceneAtomFamily(canvasId));
   const RecoilBridge = useRecoilBridgeAcrossReactRoots_UNSTABLE();
 
   useEffect(() => {
@@ -38,7 +40,6 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
       const gltf = (await new GLTFLoader().loadAsync(url, () => {})) as GLTF;
       VRMUtils.removeUnnecessaryJoints(gltf.scene);
       const vrm = await VRM.from(gltf);
-      setVrm(vrm);
 
       // 180°回転
       const boneNode = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.Hips);
@@ -62,6 +63,7 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
       armAction.play();
       setArmActionState(armAction);
       setMixer(mixer);
+      setVrm(vrm);
     })();
   }, [url]);
 
@@ -79,8 +81,10 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
     }
   }, [vrm, camera]);
 
-  const handleOnCreated = ({ camera }: CanvasContext) => {
+  const handleOnCreated = ({ scene, camera, gl }: CanvasContext) => {
+    setScene(scene);
     setCamera(camera);
+    setRenderer(gl);
   };
 
   return (
@@ -90,12 +94,12 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
           style={{ background: 'black', width, height, border: 'solid 1px black' }}
           camera={{ fov: 50, aspect: 4.0 / 3.0, near: 0.4, far: 1.0 }}
           onCreated={handleOnCreated}
+          invalidateFrameloop={true}
         >
           <CanvasStateContext.Provider value={value}>
             <RecoilBridge>
               <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
               <Suspense fallback={null}>{vrm && mixer && <VRMAvatar scene={vrm.scene} />}</Suspense>
-              <Suspense fallback={null}>{vrm && mixer && <VRMAnimation />}</Suspense>
             </RecoilBridge>
           </CanvasStateContext.Provider>
         </Canvas>

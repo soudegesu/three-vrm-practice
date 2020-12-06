@@ -1,3 +1,4 @@
+import { Box } from '@material-ui/core';
 import React, { FC, useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { statsAtom } from '../../states/VRMState';
@@ -7,13 +8,17 @@ const StatsPanel: FC = () => {
   const stats = useRecoilValue(statsAtom);
 
   useEffect(() => {
-    if (ref && ref.current) {
+    if (ref && ref.current && stats) {
       stats.showPanel(0);
       ref.current.appendChild(stats.dom);
     }
-  }, [ref]);
+  }, [ref, stats]);
 
-  return <div ref={ref}></div>;
+  return (
+    <Box position="absolute">
+      <div ref={ref}></div>
+    </Box>
+  );
 };
 
 export default StatsPanel;
