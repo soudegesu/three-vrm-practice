@@ -28,7 +28,7 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   const { canvasId } = useCanvasState();
   const [vrm, setVrm] = useRecoilState(vrmAtomFamily(canvasId));
   const [camera, setCamera] = useRecoilState(cameraAtomFamily(canvasId));
-  const [mixer, setMixer] = useRecoilState(mixerAtomFamily(canvasId));
+  const setMixer = useSetRecoilState(mixerAtomFamily(canvasId));
   const setRenderer = useSetRecoilState(rendererAtomFamily(canvasId));
   const setFunActionState = useSetRecoilState(angryAnimationAtomFamily(canvasId));
   const setArmActionState = useSetRecoilState(armAnimationAtomFamily(canvasId));
