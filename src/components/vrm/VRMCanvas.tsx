@@ -81,7 +81,9 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
     }
   }, [vrm, camera]);
 
-  const handleOnCreated = ({ scene, camera, gl }: CanvasContext) => {
+  const handleOnCreated = ({ clock, scene, camera, gl }: CanvasContext) => {
+    //　Clockはグローバルに1つにするためここでは有効化しない
+    if (clock.running) clock.stop();
     setScene(scene);
     setCamera(camera);
     setRenderer(gl);
