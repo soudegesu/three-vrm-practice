@@ -18,7 +18,7 @@ export const rafIdAtom = atom<number>({
   default: 0,
 });
 
-export const clockAtomFamily = atomFamily<Clock, CanvasId>({
+export const clockAtom = atom<Clock>({
   key: `${atomKeyPrefix}/clock`,
   default: new Clock(true),
   dangerouslyAllowMutability: true,

@@ -10,16 +10,16 @@ import CanvasProvider from '../provider/CanvasProvider';
 
 const TopPage: FC = () => {
   const url = '/models/AliciaSolid.vrm';
-  const numOfAvatars = 1;
   const cellHeight = 700;
   const canvasWidth = 640;
   const canvasHeight = 480;
+  const canvasIds = Array.of(0, 1, 2, 3, 4, 5, 6, 7, 8);
 
   return (
     <RecoilRoot>
       <StatsPanel />
       <GridList cols={2} cellHeight={cellHeight}>
-        {[...Array(numOfAvatars)].map((_, i) => (
+        {canvasIds.map((i) => (
           <CanvasProvider key={i} canvasId={i}>
             <GridListTile cols={1}>
               <Box>
@@ -39,7 +39,7 @@ const TopPage: FC = () => {
           </CanvasProvider>
         ))}
       </GridList>
-      <AnimationWorker />
+      <AnimationWorker canvasIds={canvasIds} />
     </RecoilRoot>
   );
 };
