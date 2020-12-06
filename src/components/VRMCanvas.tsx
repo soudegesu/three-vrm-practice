@@ -16,6 +16,7 @@ import {
   vrmAtomFamily,
 } from '../states/VRMState';
 import { createAngryAction, createArmAction } from '../util/animationActionCreator';
+import VRMAnimation from './VRMAnimation';
 
 interface Props {
   url: string;
@@ -31,8 +32,6 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
   const setFunActionState = useSetRecoilState(angryAnimationAtomFamily(canvasId));
   const setArmActionState = useSetRecoilState(armAnimationAtomFamily(canvasId));
   const RecoilBridge = useRecoilBridgeAcrossReactRoots_UNSTABLE();
-  const ref = useRef<HTMLDivElement | null>(null);
-  const stats = useRecoilValue(statsAtom);
 
   useEffect(() => {
     (async () => {
@@ -40,24 +39,31 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
       VRMUtils.removeUnnecessaryJoints(gltf.scene);
       const vrm = await VRM.from(gltf);
       setVrm(vrm);
+
+      // 180°回転
+      const boneNode = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.Hips);
+      if (boneNode) boneNode.rotateY(Math.PI);
+      // 左腕を下ろす
+      const leftArm = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.LeftUpperArm);
+      if (leftArm) leftArm.rotateZ((Math.PI * 2) / 5);
+      // 右腕を下ろす
+      const rightArm = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.RightUpperArm);
+      if (rightArm) rightArm.rotateZ((-Math.PI * 2) / 5);
+
+      // Animation Mixerを作成
+      const mixer = new AnimationMixer(vrm.scene);
+
+      // 怒った顔
+      const angryAction = createAngryAction({ vrm, mixer });
+      setFunActionState(angryAction);
+
+      // 腕を上げ下げする
+      const armAction = createArmAction({ vrm, mixer });
+      armAction.play();
+      setArmActionState(armAction);
+      setMixer(mixer);
     })();
   }, [url]);
-
-  useEffect(() => {
-    if (!vrm) {
-      return;
-    }
-    // 180°回転
-    const boneNode = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.Hips);
-    if (boneNode) boneNode.rotateY(Math.PI);
-
-    // 左腕を下ろす
-    const leftArm = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.LeftUpperArm);
-    if (leftArm) leftArm.rotateZ((Math.PI * 2) / 5);
-    // 右腕を下ろす
-    const rightArm = vrm.humanoid?.getBoneNode(VRMSchema.HumanoidBoneName.RightUpperArm);
-    if (rightArm) rightArm.rotateZ((-Math.PI * 2) / 5);
-  }, [vrm]);
 
   useEffect(() => {
     if (!vrm || !camera) {
@@ -73,56 +79,28 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
     }
   }, [vrm, camera]);
 
-  useEffect(() => {
-    if (!vrm || !setMixer) {
-      return;
-    }
-    // Animation Mixerを作成
-    const mixer = new AnimationMixer(vrm.scene);
-
-    // 怒った顔
-    const angryAction = createAngryAction({ vrm, mixer });
-    setFunActionState(angryAction);
-
-    // 腕を上げ下げする
-    const armAction = createArmAction({ vrm, mixer });
-    armAction.play();
-    setArmActionState(armAction);
-    setMixer(mixer);
-  }, [vrm, setMixer]);
-
   const handleOnCreated = ({ camera }: CanvasContext) => {
     setCamera(camera);
   };
 
-  useEffect(() => {
-    if (ref && ref.current) {
-      stats.showPanel(0);
-      // stats.dom.style.position = 'absolute';
-      ref.current.appendChild(stats.dom);
-    }
-  }, [ref]);
-
   return (
-    <>
-      <div ref={ref}></div>
-      <CanvasStateContext.Consumer>
-        {(value) => (
-          <Canvas
-            style={{ background: 'black', width, height, border: 'solid 1px black' }}
-            camera={{ fov: 50, aspect: 4.0 / 3.0, near: 0.4, far: 1.0 }}
-            onCreated={handleOnCreated}
-          >
-            <CanvasStateContext.Provider value={value}>
-              <RecoilBridge>
-                <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
-                <Suspense fallback={null}>{vrm && mixer && <VRMAvatar scene={vrm.scene} />}</Suspense>
-              </RecoilBridge>
-            </CanvasStateContext.Provider>
-          </Canvas>
-        )}
-      </CanvasStateContext.Consumer>
-    </>
+    <CanvasStateContext.Consumer>
+      {(value) => (
+        <Canvas
+          style={{ background: 'black', width, height, border: 'solid 1px black' }}
+          camera={{ fov: 50, aspect: 4.0 / 3.0, near: 0.4, far: 1.0 }}
+          onCreated={handleOnCreated}
+        >
+          <CanvasStateContext.Provider value={value}>
+            <RecoilBridge>
+              <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
+              <Suspense fallback={null}>{vrm && mixer && <VRMAvatar scene={vrm.scene} />}</Suspense>
+              <Suspense fallback={null}>{vrm && mixer && <VRMAnimation />}</Suspense>
+            </RecoilBridge>
+          </CanvasStateContext.Provider>
+        </Canvas>
+      )}
+    </CanvasStateContext.Consumer>
   );
 };
 

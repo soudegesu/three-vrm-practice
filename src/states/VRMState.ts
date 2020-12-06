@@ -15,7 +15,7 @@ export const statsAtom = atom<Stats>({
 
 export const clockAtomFamily = atomFamily<Clock, CanvasId>({
   key: `${atomKeyPrefix}/clock`,
-  default: new Clock(true),
+  default: new Clock(false),
   dangerouslyAllowMutability: true,
 });
 

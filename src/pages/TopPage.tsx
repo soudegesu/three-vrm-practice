@@ -3,18 +3,20 @@ import React, { FC } from 'react';
 import { RecoilRoot } from 'recoil';
 import AngryButton from '../components/action/AngryButton';
 import LikeButton from '../components/action/LikeButton';
+import StatsPanel from '../components/top/StatsPanel';
 import VRMCanvas from '../components/VRMCanvas';
 import CanvasProvider from '../provider/CanvasProvider';
 
 const TopPage: FC = () => {
   const url = '/models/AliciaSolid.vrm';
-  const numOfAvatars = 1;
+  const numOfAvatars = 2;
   const cellHeight = 700;
   const canvasWidth = 640;
   const canvasHeight = 480;
 
   return (
     <RecoilRoot>
+      <StatsPanel />
       <GridList cols={2} cellHeight={cellHeight}>
         {[...Array(numOfAvatars)].map((_, i) => (
           <CanvasProvider key={i} canvasId={i}>

@@ -14,12 +14,8 @@ export default function useAnimation() {
 
   const animation = useCallback(() => {
     const delta = clock.getDelta();
-    if (vrm) {
-      vrm.update(delta);
-    }
-    if (mixer) {
-      mixer.update(delta);
-    }
+    if (vrm) vrm.update(delta);
+    if (mixer) mixer.update(delta);
     stats.update();
     setRafId(requestAnimationFrame(animation));
   }, []);
