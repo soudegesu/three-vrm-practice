@@ -99,7 +99,7 @@ const VRMCanvas: FC<Props> = ({ url, height, width }) => {
           <CanvasStateContext.Provider value={value}>
             <RecoilBridge>
               <directionalLight color="#ffffff" intensity={0.3} position={new Vector3(1, 1, 1).normalize()} />
-              <Suspense fallback={null}>{vrm && mixer && <VRMAvatar scene={vrm.scene} />}</Suspense>
+              <Suspense fallback={null}>{vrm && <VRMAvatar scene={vrm.scene} />}</Suspense>
             </RecoilBridge>
           </CanvasStateContext.Provider>
         </Canvas>
