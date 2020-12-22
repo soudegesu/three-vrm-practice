@@ -2,7 +2,7 @@
   "eslint.validate": ["javascript", "javascriptreact"],
   "eslint.options": {
     "configFile": ".eslintrc.json",
-    "ignorePath": ".gitignore"
+    "ignorePath": ".eslintignore"
   },
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.codeActionsOnSave": {
